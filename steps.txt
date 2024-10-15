@@ -1,0 +1,9 @@
+1. Scrape SEBI Website for orders and extract date, Title and HTML links
+2. Convert HTML links to PDF links using bs4 by identifying frame.src element
+3. Download PDFs and name them sequentially
+4. Excel -> Replace Ctrl+J with nothing
+5. Link validation in Excel file
+6. Extract Order numbers using regex
+7. Extract Order numbers using OpenAI
+
+Even in the 5 quarters, we found: 6 duplicate orders, 7 incorrectly uploaded orders, 
