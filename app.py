@@ -23,11 +23,20 @@ def load_data(file_path):
     Returns:
         pd.DataFrame: Loaded data as a pandas DataFrame.
     """
-    return pd.read_excel(file_path)
+    # Assuming 'main.xlsx' is available in the environment
+    try:
+        return pd.read_excel(file_path)
+    except FileNotFoundError:
+        st.error(f"Error: The file '{file_path}' was not found.")
+        return pd.DataFrame()
 
 # Load Excel data
 file_path = 'main.xlsx'
 df = load_data(file_path)
+
+# Ensure the DataFrame is not empty before proceeding
+if df.empty:
+    st.stop()
 
 # Data preprocessing
 df['DATE'] = pd.to_datetime(df['DATE'])
@@ -68,6 +77,11 @@ filtered_df = df[df['quarter'].isin(selected_quarters) & df['TYPE'].isin(selecte
 # Main content
 st.title('SEBI Orders Dashboard')
 
+# Check if filtered data is available
+if filtered_df.empty:
+    st.warning("No data matches the current filter selection.")
+    st.stop()
+
 # Create a 2x2 grid layout for visualizations
 col1, col2 = st.columns(2)
 col3, col4 = st.columns(2)
@@ -89,36 +103,51 @@ with col1:
 # Visualization 2: Penalty Applied Per Quarter
 with col2:
     st.subheader('Penalty Applied Per Quarter')
-    penalty_per_quarter = filtered_df.groupby('quarter')['PENALTY'].sum().reset_index()
-    fig_penalty = px.bar(
-        penalty_per_quarter,
-        x='quarter',
-        y='PENALTY',
-        title='Penalty Per Quarter'
-    )
-    st.plotly_chart(fig_penalty)
+    # Check for 'PENALTY' column existence
+    if 'PENALTY' in filtered_df.columns:
+        penalty_per_quarter = filtered_df.groupby('quarter')['PENALTY'].sum().reset_index()
+        fig_penalty = px.bar(
+            penalty_per_quarter,
+            x='quarter',
+            y='PENALTY',
+            title='Penalty Per Quarter'
+        )
+        st.plotly_chart(fig_penalty)
+    else:
+        st.info("The 'PENALTY' column is missing from the data.")
 
-# Visualization 3: Regulations Violated Per Quarter
+# Visualization 3: Regulations Violated Per Quarter (FIXED KEYERROR HERE)
 with col3:
     st.subheader('Violations Per Quarter')
-    regulations = ['pfutp', 'mb', 'lodr', 'icdr', 'pit', 'ia', 'sast', 'broker', 'circular', 'cis', 'act', 'scr']
-    violations_per_quarter = filtered_df.groupby('quarter')[regulations].sum().reset_index()
     
-    fig_violations = go.Figure()
-    for regulation in regulations:
-        fig_violations.add_trace(go.Scatter(
-            x=violations_per_quarter['quarter'],
-            y=violations_per_quarter[regulation],
-            mode='lines+markers',
-            name=regulation.upper()
-        ))
+    # Define the list of potential regulation columns
+    potential_regulations = ['pfutp', 'mb', 'lodr', 'icdr', 'pit', 'ia', 'sast', 'broker', 'circular', 'cis', 'act', 'scr']
     
-    fig_violations.update_layout(
-        title='Regulations Violated Per Quarter',
-        xaxis_title='Quarter',
-        yaxis_title='Number of Violations'
-    )
-    st.plotly_chart(fig_violations)
+    # Filter the list to only include columns that actually exist in the DataFrame
+    existing_regulations = [col for col in potential_regulations if col in filtered_df.columns]
+    
+    if existing_regulations:
+        # Now use only the existing columns for grouping and summing
+        violations_per_quarter = filtered_df.groupby('quarter')[existing_regulations].sum().reset_index()
+        
+        fig_violations = go.Figure()
+        for regulation in existing_regulations:
+            fig_violations.add_trace(go.Scatter(
+                x=violations_per_quarter['quarter'],
+                y=violations_per_quarter[regulation],
+                mode='lines+markers',
+                name=regulation.upper()
+            ))
+        
+        fig_violations.update_layout(
+            title='Regulations Violated Per Quarter',
+            xaxis_title='Quarter',
+            yaxis_title='Number of Violations'
+        )
+        st.plotly_chart(fig_violations)
+    else:
+        st.info("No regulation violation columns found in the dataset to plot violations. Please check your Excel file column names.")
+
 
 # Visualization 4: Interactive Data Table
 with col4:
