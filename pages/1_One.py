@@ -19,7 +19,7 @@ def get_gemini_response(question: str, prompt: list) -> str:
     
     Includes retry logic with exponential backoff for ResourceExhausted and InternalServerError.
     """
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-2.5-flash')
     max_retries = 3
     base_delay = 2 # seconds for the initial delay
 
@@ -167,3 +167,4 @@ if df is not None:
         st.warning("Please enter a question before asking.")
 else:
     st.info("Please upload an Excel file above to enable the chatbot functionality.")
+
