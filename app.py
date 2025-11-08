@@ -12,7 +12,6 @@ st.set_page_config(
 )
 
 # Load data from the Excel file
-@st.cache_data
 def load_data(file_path):
     """
     Load data from an Excel file and cache it for improved performance.
@@ -165,6 +164,7 @@ st.sidebar.download_button(
     data=filtered_df.to_csv(index=False),
     mime='text/csv'
 )
+
 
 
 
