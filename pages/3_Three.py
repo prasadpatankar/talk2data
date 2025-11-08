@@ -7,7 +7,7 @@ import google.generativeai as genai
 ## Configure Genai Key
 #genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 # Configure Gemini API key
-myapi_key = "AIzaSyDE7hhHqhn_0KgVzJxh9nyhmlhjZVSuCOA"
+myapi_key = "AIzaSyDD5kBVlFsP49hNV6109UwtfGCWudxAjfU"
 genai.configure(api_key=myapi_key)
 
 ## Function To Load Google Gemini Model and provide queries as response
@@ -130,3 +130,4 @@ if submit:
         # Display the error message
         st.subheader("Error Executing SQL Query")
         st.write(result_df)  # Display the error message
+
