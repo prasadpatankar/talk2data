@@ -90,6 +90,7 @@ prompt = [
     11. **PENALTY**: The monetary penalty imposed by the SEBI order. If the penalty is zero, it indicates that the proceedings were disposed of.
     12. **ACTION**: This column captures any actions related to the penalty, though its data seems sparse (mostly NaN).
     13. **NOTICEE**: The entity or person against whom the order was passed, often accompanied by an identifying tax number (like PAN).
+    14. **existing_regulation**: The entity has violated one of the following regulations.
 
     ### Key Contextual Information:
     - **Order Types**: There are two primary types of SEBI orders — AO (Adjudication Order) and QJ (Quasi-Judicial).
@@ -146,6 +147,7 @@ if df is not None:
         st.warning("Please enter a question before asking.")
 else:
     st.info("Please upload an Excel file above to enable the chatbot functionality.")
+
 
 
 
