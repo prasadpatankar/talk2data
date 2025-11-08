@@ -10,7 +10,7 @@ from google.api_core.exceptions import ResourceExhausted, InternalServerError # 
 
 # Configure Gemini API key
 # The key is set to an empty string. The execution environment will handle authentication.
-myapi_key = ""
+myapi_key = "AIzaSyDD5kBVlFsP49hNV6109UwtfGCWudxAjfU"
 genai.configure(api_key=myapi_key)
 
 def get_gemini_response(question: str, prompt: list) -> str:
@@ -167,4 +167,5 @@ if df is not None:
         st.warning("Please enter a question before asking.")
 else:
     st.info("Please upload an Excel file above to enable the chatbot functionality.")
+
 
