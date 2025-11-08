@@ -34,10 +34,6 @@ def load_data(file_path):
 file_path = 'main.xlsx'
 df = load_data(file_path)
 
-# Ensure the DataFrame is not empty before proceeding
-if df.empty:
-    st.stop()
-
 # Data preprocessing
 df['DATE'] = pd.to_datetime(df['DATE'])
 df['quarter'] = df['DATE'].dt.to_period('Q').astype(str)
@@ -169,5 +165,6 @@ st.sidebar.download_button(
     data=filtered_df.to_csv(index=False),
     mime='text/csv'
 )
+
 
 
