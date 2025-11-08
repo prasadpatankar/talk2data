@@ -107,30 +107,9 @@ prompt = [
 
 # --- Streamlit Application ---
 st.set_page_config(page_title="Basic Database Chatbot")
-st.header("SQL Generation Chatbot (using Gemini)")
-st.markdown("Upload your Excel file to start querying the data using natural language.")
+st.header("Ask your query on SEBI Orders")
 
-# 1. FILE UPLOADER (For general runnability, keep file uploader)
-uploaded_file = st.file_uploader("Choose an Excel file", type="xlsx")
-
-df = None
-
-# Process file if uploaded
-if uploaded_file is not None:
-    try:
-        # Load Excel file into DataFrame from the uploaded file object
-        df = pd.read_excel(uploaded_file)
-        
-        # Drop the PATH column if it exists (Original logic)
-        if 'PATH' in df.columns:
-            df.drop(columns=['PATH'], inplace=True)
-
-        st.success("File loaded successfully. Data preview:")
-        st.dataframe(df.head()) # Show a preview
-
-    except Exception as e:
-        st.error(f"Error reading file: {e}")
-        df = None # Ensure df is None if reading fails
+df = pd.read_excel("main.xlsx")
 
 # 2. Conditional Chatbot Logic
 if df is not None:
@@ -167,5 +146,6 @@ if df is not None:
         st.warning("Please enter a question before asking.")
 else:
     st.info("Please upload an Excel file above to enable the chatbot functionality.")
+
 
 
