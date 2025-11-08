@@ -5,7 +5,7 @@ import sqlite3
 import google.generativeai as genai
 
 # Configure Gemini API key
-myapi_key = "AIzaSyDE7hhHqhn_0KgVzJxh9nyhmlhjZVSuCOA"
+myapi_key = "AIzaSyDD5kBVlFsP49hNV6109UwtfGCWudxAjfU"
 genai.configure(api_key=myapi_key)
 
 ## Function To Load Google Gemini Model and provide queries as response
@@ -99,6 +99,7 @@ if submit:
     st.write(sql_output)  # Display the SQL result DataFrame
     st.subheader("LLM Generated Answer is")
     st.write(llm_response)  # Display the LLM-generated text response
+
 
 
 
