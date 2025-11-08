@@ -116,37 +116,43 @@ with col2:
     else:
         st.info("The 'PENALTY' column is missing from the data.")
 
-# Visualization 3: Regulations Violated Per Quarter (FIXED KEYERROR HERE)
+# Visualization 3: Total Violation Counts (Unique Violations on X-axis)
 with col3:
-    st.subheader('Violations Per Quarter')
+    st.subheader('Total Violation Counts by Category')
     
-    # Define the list of potential regulation columns
-    potential_regulations = ['pfutp', 'mb', 'lodr', 'icdr', 'pit', 'ia', 'sast', 'broker', 'circular', 'cis', 'act', 'scr']
-    
-    # Filter the list to only include columns that actually exist in the DataFrame
-    existing_regulations = [col for col in potential_regulations if col in filtered_df.columns]
-    
-    if existing_regulations:
-        # Now use only the existing columns for grouping and summing
-        violations_per_quarter = filtered_df.groupby('quarter')[existing_regulations].sum().reset_index()
+    # 1. Check for the new column 'existing_regulations'
+    if 'existing_regulations' in filtered_df.columns:
         
-        fig_violations = go.Figure()
-        for regulation in existing_regulations:
-            fig_violations.add_trace(go.Scatter(
-                x=violations_per_quarter['quarter'],
-                y=violations_per_quarter[regulation],
-                mode='lines+markers',
-                name=regulation.upper()
-            ))
+        # 2. Split and Explode the comma-separated strings to count each regulation instance
+        violation_series = filtered_df['existing_regulations'].astype(str).str.split(',\s*')
+        # Explode the DataFrame to get one row per violation category
+        exploded_df = filtered_df.assign(regulation=violation_series).explode('regulation')
         
-        fig_violations.update_layout(
-            title='Regulations Violated Per Quarter',
-            xaxis_title='Quarter',
-            yaxis_title='Number of Violations'
+        # Clean up regulation names (trim potential whitespace from split)
+        exploded_df['regulation'] = exploded_df['regulation'].str.strip()
+        
+        # Filter out empty strings that might result from splitting
+        exploded_df = exploded_df[exploded_df['regulation'] != '']
+        
+        # 3. Group by the individual regulation, then count the total occurrences
+        total_violations_by_category = exploded_df.groupby('regulation').size().reset_index(name='Total Violations')
+        
+        # 4. Create the Bar Chart
+        fig_violations = px.bar(
+            total_violations_by_category,
+            x='regulation',
+            y='Total Violations',
+            color='regulation', # Color by category for visual distinction
+            title='Total Number of Violation Instances Across Filtered Orders',
+            labels={'regulation': 'Violation Category', 'Total Violations': 'Total Count of Violations'}
         )
+        
+        # Improve layout for readability
+        fig_violations.update_layout(xaxis={'categoryorder':'total descending'}) # Sort bars by count
+        
         st.plotly_chart(fig_violations)
     else:
-        st.info("No regulation violation columns found in the dataset to plot violations. Please check your Excel file column names.")
+        st.info("The 'existing_regulations' column is missing. Please ensure you have run the data transformation script and that 'violations_report.xlsx' is the loaded file.")
 
 
 # Visualization 4: Interactive Data Table
@@ -163,3 +169,4 @@ st.sidebar.download_button(
     data=filtered_df.to_csv(index=False),
     mime='text/csv'
 )
+
