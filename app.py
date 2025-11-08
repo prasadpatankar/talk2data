@@ -129,22 +129,22 @@ with col3:
     if existing_regulations:
         # Now use only the existing columns for grouping and summing
         violations_per_quarter = filtered_df.groupby('quarter')[existing_regulations].sum().reset_index()
-        
-        fig_violations = go.Figure()
-        for regulation in existing_regulations:
-            fig_violations.add_trace(go.Scatter(
-                x=violations_per_quarter['quarter'],
-                y=violations_per_quarter[regulation],
-                mode='lines+markers',
-                name=regulation.upper()
-            ))
-        
-        fig_violations.update_layout(
-            title='Regulations Violated Per Quarter',
-            xaxis_title='Quarter',
-            yaxis_title='Number of Violations'
-        )
-        st.plotly_chart(fig_violations)
+        
+        fig_violations = go.Figure()
+        for regulation in existing_regulations:
+            fig_violations.add_trace(go.Scatter(
+                x=violations_per_quarter['quarter'],
+                y=violations_per_quarter[regulation],
+                mode='lines+markers',
+                name=regulation.upper()
+            ))
+        
+        fig_violations.update_layout(
+            title='Regulations Violated Per Quarter',
+            xaxis_title='Quarter',
+            yaxis_title='Number of Violations'
+        )
+        st.plotly_chart(fig_violations)
     else:
         st.info("No regulation violation columns found in the dataset to plot violations. Please check your Excel file column names.")
 
