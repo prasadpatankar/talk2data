@@ -114,7 +114,6 @@ with col2:
 # Visualization 3: Total Violation Counts (Unique Violations on X-axis)
 with col3:
     st.subheader('Total Violation Counts by Category')
-    st.write(filtered_df.head())
     # 1. Check for the new column 'existing_regulations'
     if 'existing_regulations' in filtered_df.columns:
         
@@ -164,6 +163,7 @@ st.sidebar.download_button(
     data=filtered_df.to_csv(index=False),
     mime='text/csv'
 )
+
 
 
 
